@@ -4,7 +4,12 @@ import axios from "axios";
 import "components/Application.scss";
 import DayList from "./DayList";
 import Appointment from "components/Appointment/index";
-import { getAppointmentsForDay } from "../helpers/selectors";
+import {
+  getAppointmentsForDay,
+  getInterview,
+  getInterviewersForDay,
+} from "../helpers/selectors";
+import useVisualMode from "hooks/useVisualMode";
 
 export default function Application(props) {
   // const [day, setDay] = useState("Monday");
@@ -13,6 +18,7 @@ export default function Application(props) {
     day: "Monday",
     days: [],
     appointments: {},
+    interviewers: {},
   }); // combined state
 
   const dailyAppointments = getAppointmentsForDay(state, state.day);
@@ -21,13 +27,15 @@ export default function Application(props) {
 
   useEffect(() => {
     Promise.all([
-      Promise.resolve(axios.get("/api/days")),
-      Promise.resolve(axios.get("/api/appointments")),
+      axios.get("/api/days"),
+      axios.get("/api/appointments"),
+      axios.get("/api/interviewers"),
     ]).then((all) => {
       setState((prev) => ({
         ...prev,
         days: all[0].data,
         appointments: all[1].data,
+        interviewers: all[2].data,
       }));
     });
   }, []);
@@ -51,15 +59,20 @@ export default function Application(props) {
         />
       </section>
       <section className="schedule">
-        {dailyAppointments.map((appointment) => (
-          <Appointment
-            key={appointment.id}
-            // id={appointment.id}
-            // time={appointment.time}
-            // interview={appointment.interview}
-            {...appointment}
-          />
-        ))}
+        {dailyAppointments.map((appointment) => {
+          const interview = getInterview(state, appointment.interview);
+          const interviewersForDay = getInterviewersForDay(state, state.day);
+
+          return (
+            <Appointment
+              key={appointment.id}
+              id={appointment.id}
+              time={appointment.time}
+              interview={interview}
+              interviewers={interviewersForDay}
+            />
+          );
+        })}
         <Appointment key="last" time="5pm" />
       </section>
     </main>
