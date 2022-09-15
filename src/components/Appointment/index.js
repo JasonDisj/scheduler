@@ -44,7 +44,7 @@ export default function Appointment(props) {
   }
 
   return (
-    <article className="appointment">
+    <article className="appointment" data-testid="appointment">
       <Header time={props.time} />
 
       {mode === SHOW && (
@@ -76,7 +76,7 @@ export default function Appointment(props) {
 
       {mode === EDIT && (
         <Form
-          name={props.interview.student}
+          student={props.interview.student}
           interviewer={props.interview.interviewer.id}
           interviewers={props.interviewers}
           onCancel={back}
