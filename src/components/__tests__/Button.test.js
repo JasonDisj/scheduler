@@ -10,10 +10,10 @@ it("renders without crashing", () => {
   render(<Button />);
 });
 
-// it.skip("renders its `children` prop as text", () => {
-//   const { getByText } = render(<Button>Default</Button>);
-//   expect(getByText("Default")).toBeInTheDocument();
-// });
+it("renders its `children` prop as text", () => {
+  const { getByText } = render(<Button>Default</Button>);
+  expect(getByText("Default")).toBeInTheDocument();
+});
 
 // it.skip("renders a default button style", () => {
 //   const { getByText } = render(<Button>Default</Button>);
